@@ -25,6 +25,10 @@ const uploadToCloudinary = async (
   file: IUploadFile
 ): Promise<ICloudinaryResponse | undefined> => {
   return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(undefined);
+    }
+    
     cloudinary.uploader.upload(
       file.path,
       (error: Error, result: ICloudinaryResponse) => {

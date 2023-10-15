@@ -23,24 +23,15 @@ model User {
   @@map("users")
 }
 
-model ServiceFeature {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  featureName String
-  services    Service[]
-
-  @@map("service_features")
-}
-
 model Service {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  serviceName      String
-  image            String
-  description      String
-  price            Float
-  length           Int
-  booking          Booking[]
-  ServiceFeature   ServiceFeature @relation(fields: [serviceFeatureId], references: [id])
-  serviceFeatureId String         @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String @unique
+  image       String
+  description String
+  price       Float
+  length      Int
+  booking     Booking[]
+  features    String[]
 
   @@map("services")
 }

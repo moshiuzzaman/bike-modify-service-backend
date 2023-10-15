@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { userRole } from './auth.constant';
+import { userRole } from './auth.constants';
 
 const loginZodSchema = z.object({
   body: z.object({
