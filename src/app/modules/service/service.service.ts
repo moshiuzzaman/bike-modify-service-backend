@@ -6,8 +6,9 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IUploadFile } from '../../../interfaces/file';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import { IRoomFilterRequest } from '../room/room.interface';
+
 import { serviceSearchableFields } from './service.constants';
+import { IServiceFilterRequest } from './service.interface';
 
 const createService = async (req: Request): Promise<Service> => {
   const file = req.file as IUploadFile;
@@ -25,7 +26,7 @@ const createService = async (req: Request): Promise<Service> => {
 };
 
 const getAllService = async (
-  filters: IRoomFilterRequest,
+  filters: IServiceFilterRequest,
   options: IPaginationOptions
 ): Promise<IGenericResponse<Service[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -100,8 +101,7 @@ const getServiceById = async (id: string): Promise<Service | null> => {
 
 const updateService = async (id: string, req: Request): Promise<Service> => {
   const file = req.file as IUploadFile;
-  
-  
+
   const uploadedImage = await FileUploadHelper.uploadToCloudinary(file);
   if (uploadedImage) {
     req.body.image = uploadedImage.secure_url;

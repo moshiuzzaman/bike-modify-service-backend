@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Booking, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import ApiError from '../errors/ApiError';
@@ -13,29 +13,53 @@ export const asyncForEach = async (array: any[], callback: any) => {
   }
 };
 
-export const hasTimeConflict = (
-  existingSlots: {
-    startTime: string;
-    endTime: string;
-    // dayOfWeek: WeekDays
-  }[],
-  newSlot: {
-    startTime: string;
-    endTime: string;
-    // dayOfWeek: WeekDays
-  }
-) => {
-  for (const slot of existingSlots) {
-    const existingStart = new Date(`1970-01-01T${slot.startTime}:00`);
-    const existingEnd = new Date(`1970-01-01T${slot.endTime}:00`);
-    const newStart = new Date(`1970-01-01T${newSlot.startTime}:00`);
-    const newEnd = new Date(`1970-01-01T${newSlot.startTime}:00`);
 
-    if (newStart < existingEnd && newEnd > existingStart) {
-      return true;
+
+export const isBookingAvailableQuery = async (
+  payload: Booking
+): Promise<boolean> => {
+  const service = await prisma.service.findFirst({
+    where: {
+      id: payload.serviceId,
+    },
+  });
+
+  if (!service) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Get all bookings for the same service
+  const bookings = await prisma.booking.findMany({
+    where: {
+      serviceId: payload.serviceId,
+    },
+  });
+
+  // Check if the new booking conflicts with any existing bookings
+  for (const booking of bookings) {
+    const startDate = new Date(payload.startDate);
+    
+    const endDate = new Date(
+      startDate.getTime() + service.length * 24 * 60 * 60 * 1000
+    );
+
+
+    const existingStartDate = new Date(booking.startDate);
+    const existingEndDate = new Date(
+      existingStartDate.getTime() + service.length* 24 * 60 * 60 * 1000
+    );
+    console.log({startDate}, {endDate}, {existingStartDate}, {existingEndDate});
+    
+
+    if (startDate < existingEndDate && endDate > existingStartDate) {
+      throw new ApiError(
+        httpStatus.BAD_REQUEST,
+        'Booking is not available for this service at this time'
+      );
     }
   }
-  return false;
+
+  return true;
 };
 
 export const isPasswordMatchedQuery = async function (
