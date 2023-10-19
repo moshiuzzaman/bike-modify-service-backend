@@ -11,6 +11,8 @@ router.post(
   '/signUp',
   FileUploadHelper.upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body);
+    
     req.body = AuthValidation.register.parse(JSON.parse(req.body.data));
     return authController.registerUser(req, res, next);
   }

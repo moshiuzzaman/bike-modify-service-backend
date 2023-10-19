@@ -23,6 +23,8 @@ app.use(globalErrorHandler);
 
 //handle not found
 app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log('Not Found');
+  
   res.status(httpStatus.NOT_FOUND).json({
     success: false,
     message: 'Not Found',

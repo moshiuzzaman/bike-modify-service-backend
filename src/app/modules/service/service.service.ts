@@ -18,6 +18,11 @@ const createService = async (req: Request): Promise<Service> => {
   }
 
   const payload = req.body;
+  if (payload.status === 'false') {
+    payload.status = false;
+  } else if (payload.status === 'true') {
+    payload.status = true;
+  }
 
   const result = await prisma.service.create({
     data: payload,
@@ -109,6 +114,12 @@ const updateService = async (id: string, req: Request): Promise<Service> => {
 
   const payload = req.body;
 
+  if (payload.status === 'false') {
+    payload.status = false;
+  } else if (payload.status === 'true') {
+    payload.status = true;
+  }
+
   const result = await prisma.service.update({
     where: {
       id,
@@ -124,6 +135,8 @@ const deleteService = async (id: string): Promise<Service> => {
       id,
     },
   });
+  console.log({ result });
+  
   return result;
 };
 

@@ -11,14 +11,16 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  image    String?
-  email    String    @unique
-  password String
-  role     Role      @default(USER)
-  name     String
-  address  String
-  bookings Booking[]
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  image     String?
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  name      String
+  address   String
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("users")
 }
@@ -28,10 +30,13 @@ model Service {
   title       String    @unique
   image       String
   description String
-  price       Float
-  length      Int
+  price       String
+  status      Boolean   @default(true)
+  length      String
   booking     Booking[]
-  features    String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("services")
 }
@@ -46,6 +51,8 @@ model Booking {
   startDate   DateTime
   description String
   reviews     Review[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("bookings")
 }
@@ -55,8 +62,10 @@ model Review {
   bookingId String  @db.ObjectId
   booking   Booking @relation(fields: [bookingId], references: [id])
 
-  rating  Int
-  comment String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("reviews")
 }

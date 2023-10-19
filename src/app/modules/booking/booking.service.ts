@@ -6,7 +6,7 @@ import prisma from '../../../shared/prisma';
 import { isBookingAvailableQuery } from '../../../shared/utils';
 
 const createBooking = async (payload: Booking): Promise<Booking> => {
-  await isBookingAvailableQuery(payload);
+  // await isBookingAvailableQuery(payload);
   const booking = await prisma.booking.create({
     data: {
       ...payload,

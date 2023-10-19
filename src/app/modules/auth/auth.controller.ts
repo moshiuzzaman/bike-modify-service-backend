@@ -7,7 +7,7 @@ import { authService } from './auth.service';
 
 const loginUser = catchAsync(async (req: Request, res: Response<any>) => {
   const { email, password } = req.body as ILoginUser;
-
+  
   const result = await authService.loginUser({ email, password });
   const response = {
     statusCode: httpStatus.OK,
@@ -19,7 +19,10 @@ const loginUser = catchAsync(async (req: Request, res: Response<any>) => {
 });
 
 const registerUser = catchAsync(async (req: Request, res: Response<any>) => {
+  console.log('email');
     const result = await authService.registerUser(req);
+  
+
     const response = {
         statusCode: httpStatus.OK,
         data: result,

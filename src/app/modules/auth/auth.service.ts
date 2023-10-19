@@ -29,8 +29,6 @@ const loginUser = async (payload: ILoginUser): Promise<string> => {
 
 const registerUser = async (req: Request): Promise<User> => {
   const file = req.file as IUploadFile;
- 
-
   const uploadedImage = await FileUploadHelper.uploadToCloudinary(file);
   
   if (uploadedImage) {

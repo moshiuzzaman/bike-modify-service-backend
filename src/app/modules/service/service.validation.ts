@@ -8,14 +8,17 @@ const create = z.object({
         description: z.string({
             required_error: 'Description is required'
         }),
-        price: z.number({
+        price: z.string({
             required_error: 'Price is required'
         }),
-        length: z.number({
+        length: z.string({
             required_error: 'Length is required'
         }),
+        status: z.string({
+            required_error: 'Status is required'
+        }),
         
-        features: z.array(z.string()).min(1)
+       
    
 });
 
@@ -23,10 +26,11 @@ const update = z.object({
         title: z.string().optional(),
         
         description: z.string().optional(),
-        price: z.number().optional(),
-        length: z.number().optional(),
-        features: z.array(z.string()).min(1).optional()
-    
+        price: z.string().optional(),
+        length: z.string().optional(),
+        features: z.array(z.string()).min(1).optional(),
+        status: z.string().optional(),
+
 });
 
 export const ServiceValidation = {
