@@ -1,3 +1,15 @@
+Live site- https://demo-frontend.studio-23.xyz
+Video link-https://drive.google.com/file/d/1q4an6jwX_t9jToSVFua26H6P0dsk4EVl/view?usp=sharing
+
+# Credentials
+
+Super admin email- ss@mail.com
+admin email- a@mail.com
+user -uu@mail.com
+
+all pass- 1234
+
+
 # MyServiceBooking Website
 
 Welcome to the MyServiceBooking project repository. This web application is designed to offer a seamless experience for users to discover, book, and manage various services. It includes features for both users and administrators, along with super admin capabilities.
