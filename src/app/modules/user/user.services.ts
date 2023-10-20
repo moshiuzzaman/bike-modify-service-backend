@@ -1,29 +1,51 @@
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { Request } from 'express';
 import config from '../../../config';
-import { ENUM_USER_ROLE } from '../../../enums/user';
 import { FileUploadHelper } from '../../../helpers/FileUploadHelper';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IUploadFile } from '../../../interfaces/file';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
+import { userSearchAbleFields } from './user.constants';
+import { IUserFilterRequest } from './user.interface';
 
 const getAllUsers = async (
   options: IPaginationOptions,
-  role: string,
-  userType: string
+  filters: IUserFilterRequest
 ) => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
-  const whereConditions: any = {};
+  const { searchTerm, ...filterData } = filters;
+  console.log({ searchTerm, filterData });
 
-  if (role !== ENUM_USER_ROLE.SUPER_ADMIN) {
-    whereConditions.role = { equals: ENUM_USER_ROLE.USER };
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: userSearchAbleFields.map(field => ({
+        [field]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
   }
-  if (userType !== 'all') {
-    whereConditions.role = { equals: userType };
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map(key => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
   }
+
+  const whereConditions: Prisma.UserWhereInput =
+    andConditions.length > 0
+      ? { AND: andConditions as Prisma.UserWhereInput[] }
+      : {};
 
   const users = await prisma.user.findMany({
     where: whereConditions,
@@ -38,7 +60,9 @@ const getAllUsers = async (
             name: 'desc',
           },
   });
-  const total = await prisma.user.count();
+  const total = await prisma.user.count({
+    where: whereConditions,
+  });
   return {
     meta: {
       total,
@@ -65,7 +89,7 @@ const updateUser = async (id: string, req: Request): Promise<User> => {
   if (uploadedImage) {
     payload.image = uploadedImage.secure_url;
   }
-  if (payload.password !== '') {
+  if (payload.password) {
     const hashedPassword = await bcrypt.hash(
       payload.password,
       Number(config.bycrypt_salt_rounds)
@@ -86,6 +110,20 @@ const updateUser = async (id: string, req: Request): Promise<User> => {
   return result;
 };
 
+const updateUserRole = async (id: string, role: string): Promise<User> => {
+  console.log({ id, role });
+  
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      role,
+    },
+  });
+  return result;
+};
+
 const deleteUser = async (id: string): Promise<User> => {
   const result = await prisma.user.delete({
     where: {
@@ -100,4 +138,5 @@ export const UserService = {
   getSingleUser,
   updateUser,
   deleteUser,
+  updateUserRole,
 };

@@ -35,7 +35,7 @@ const getAllService = async (
   options: IPaginationOptions
 ): Promise<IGenericResponse<Service[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-  const { searchTerm, ...filterData } = filters;
+  const { searchTerm, status, ...filterData } = filters;
 
   const andConditions = [];
 
@@ -49,6 +49,15 @@ const getAllService = async (
       })),
     });
   }
+  if (status) {
+    const convertStatus = status === 'true' ? true : false;
+
+    andConditions.push({
+      status: {
+        equals: convertStatus,
+      },
+    });
+  }
 
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
@@ -60,11 +69,7 @@ const getAllService = async (
     });
   }
 
-  /**
-   * person = { name: 'fahim' }
-   * name = person[name]
-   *
-   */
+  
 
   const whereConditions: Prisma.ServiceWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
@@ -83,7 +88,10 @@ const getAllService = async (
           },
   });
 
-  const total = await prisma.service.count();
+  const total = await prisma.service.count({
+    where: whereConditions,
+  });
+ 
 
   return {
     meta: {
@@ -136,7 +144,7 @@ const deleteService = async (id: string): Promise<Service> => {
     },
   });
   console.log({ result });
-  
+
   return result;
 };
 

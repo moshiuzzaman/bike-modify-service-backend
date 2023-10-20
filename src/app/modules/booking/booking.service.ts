@@ -3,7 +3,6 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../shared/prisma';
-import { isBookingAvailableQuery } from '../../../shared/utils';
 
 const createBooking = async (payload: Booking): Promise<Booking> => {
   // await isBookingAvailableQuery(payload);
@@ -35,13 +34,15 @@ const getAllBooking = async (
             [options.sortBy]: options.sortOrder,
           }
         : {
-            startDate: 'desc',
+            createdAt: 'desc',
           },
 
     include: {
       service: true,
       user: true,
+      reviews: true,
     },
+    
   });
   const total = await prisma.booking.count();
   return {
@@ -54,20 +55,39 @@ const getAllBooking = async (
   };
 };
 
-const getBookingsByUserId = async (userId: string): Promise<Booking[]> => {
+const getBookingsByUserId = async (
+  userId: string,
+  options: IPaginationOptions
+): Promise<IGenericResponse<Booking[]>> => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
   const booking = await prisma.booking.findMany({
     where: {
       userId: userId,
     },
     orderBy: {
-      startDate: 'desc',
+      createdAt: 'desc',
     },
+    skip,
+    take: limit,
     include: {
       service: true,
       user: true,
+      reviews: true,
     },
   });
-  return booking;
+  const total = await prisma.booking.count({
+    where: {
+      userId: userId,
+    },
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: booking,
+  };
 };
 
 const getBookingById = async (id: string): Promise<Booking | null> => {
@@ -89,7 +109,7 @@ const updateBooking = async (
 ): Promise<Booking> => {
   console.log(payload, id);
 
-  await isBookingAvailableQuery(payload);
+  // await isBookingAvailableQuery(payload);
   const booking = await prisma.booking.update({
     where: {
       id,

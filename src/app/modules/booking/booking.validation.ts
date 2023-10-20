@@ -6,12 +6,13 @@ const createBookingZodSchema = z.object({
     serviceId: z.string({
       required_error: 'Service is required',
     }),
-    startDate: z.string({
-      required_error: 'Start date is required',
+    date: z.string({
+      required_error: ' date is required',
     }),
-    description: z.string({
-      required_error: 'Description is required',
+    time:z.string({
+      required_error: 'time is required',
     }),
+    
   }),
 });
 
@@ -20,8 +21,8 @@ const createBookingZodSchema = z.object({
 const updateBookingZodSchema = z.object({
   body: z.object({
     serviceId: z.string().optional(),
-    startDate: z.string().optional(),
-    description: z.string().optional(),
+    date: z.string().optional(),
+    time:z.string().optional(),
   }),
 });
 

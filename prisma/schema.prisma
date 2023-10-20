@@ -15,7 +15,7 @@ model User {
   image     String?
   email     String    @unique
   password  String
-  role      Role      @default(USER)
+  role      String      @default("USER")
   name      String
   address   String
   bookings  Booking[]
@@ -42,27 +42,28 @@ model Service {
 }
 
 model Booking {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  serviceId   String   @db.ObjectId
-  service     Service  @relation(fields: [serviceId], references: [id])
-  userId      String   @db.ObjectId
-  user        User     @relation(fields: [userId], references: [id])
-  status      Status   @default(PENDING)
-  startDate   DateTime
-  description String
-  reviews     Review[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId String   @db.ObjectId
+  service   Service  @relation(fields: [serviceId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  status    Status   @default(PENDING)
+  date      String
+
+  time      String
+  reviews   Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("bookings")
 }
 
 model Review {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  bookingId String  @db.ObjectId
+  bookingId String  @db.ObjectId @unique
   booking   Booking @relation(fields: [bookingId], references: [id])
 
-  rating    Int
+  
   comment   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,6 +80,6 @@ enum Role {
 enum Status {
   PENDING
   CONFIRMED
-  CANCELLED
+  CANCELED
   COMPLETED
 }
