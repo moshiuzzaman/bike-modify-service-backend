@@ -61,7 +61,7 @@ const getBookingById = catchAsync(async (req: Request, res: Response<any>) => {
 });
 
 const updateBooking = catchAsync(async (req: Request, res: Response<any>) => {
-  console.log(req.params.id, req.body);
+  
   
   const result = await BookingService.updateBooking(req.params.id, req.body);
   const response = {

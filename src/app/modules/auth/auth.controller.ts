@@ -19,7 +19,7 @@ const loginUser = catchAsync(async (req: Request, res: Response<any>) => {
 });
 
 const registerUser = catchAsync(async (req: Request, res: Response<any>) => {
-  console.log('email');
+ 
     const result = await authService.registerUser(req);
   
 

@@ -107,7 +107,6 @@ const updateBooking = async (
   id: string,
   payload: Booking
 ): Promise<Booking> => {
-  console.log(payload, id);
 
   // await isBookingAvailableQuery(payload);
   const booking = await prisma.booking.update({

@@ -17,7 +17,6 @@ const getAllUsers = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
 
   const { searchTerm, ...filterData } = filters;
-  console.log({ searchTerm, filterData });
 
   const andConditions = [];
 
@@ -105,13 +104,12 @@ const updateUser = async (id: string, req: Request): Promise<User> => {
     },
     data: payload,
   });
-  console.log({ result });
 
   return result;
 };
 
 const updateUserRole = async (id: string, role: string): Promise<User> => {
-  console.log({ id, role });
+ 
   
   const result = await prisma.user.update({
     where: {

@@ -48,7 +48,6 @@ export const isBookingAvailableQuery = async (
     const existingEndDate = new Date(
       existingStartDate.getTime() + service.length* 24 * 60 * 60 * 1000
     );
-    console.log({startDate}, {endDate}, {existingStartDate}, {existingEndDate});
     
 
     if (startDate < existingEndDate && endDate > existingStartDate) {

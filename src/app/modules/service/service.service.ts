@@ -143,7 +143,6 @@ const deleteService = async (id: string): Promise<Service> => {
       id,
     },
   });
-  console.log({ result });
 
   return result;
 };

@@ -17,7 +17,7 @@ const createService = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllService = catchAsync(async (req: Request, res: Response) => {
-  console.log(req.query);
+  
   const filters = pick(req.query, serviceFilterableFields);
   
   
